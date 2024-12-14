@@ -3,11 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class SceneManagerScript : MonoBehaviour
 {
-    public int playerColor;
-
     public void LoadGame(int color)
     {
-        playerColor = color;
+        PlayerPrefs.SetInt("PlayerColor", color);
         SceneManager.LoadScene(1);
     }
 

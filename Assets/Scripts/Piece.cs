@@ -16,14 +16,14 @@ public class Piece : MonoBehaviour
 
     private void OnMouseDown()
     {
-        // if (playerIndex != gameState.playerIndex || !gameState.dices[playerIndex].rolled)
-        // {
-        //     return;
-        // }
-        if (!gameState.dices[playerIndex].rolled)
+        if (playerIndex != gameState.playerIndex || !gameState.dices[playerIndex].rolled)
         {
             return;
         }
+        // if (!gameState.dices[playerIndex].rolled)
+        // {
+        //     return;
+        // }
 
         var diceValue = gameState.dices[playerIndex].lastRoll;
         if (!CanMakeMove(diceValue))

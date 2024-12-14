@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine.UI;
+using System.Collections;
 
 public class GameState : MonoBehaviour
 {
@@ -20,13 +22,14 @@ public class GameState : MonoBehaviour
 
     private void Start()
     {
-        currentPlayer = 0;
+        playerIndex = PlayerPrefs.GetInt("PlayerColor");
+        currentPlayer = 3;
         playerColor = new List<string> { "Red", "Green", "Yellow", "Blue" };
         AllPieces = new Dictionary<int, List<Piece>>
             { { 0, redPieces }, { 1, greenPieces }, { 2, yellowPieces }, { 3, bluePieces } };
         AllCells = new Dictionary<int, List<Cell>> 
             { { 0, redCells }, { 1, greenCells }, { 2, yellowCells }, { 3, blueCells } };
-        highlights[currentPlayer].SetActive(true);
+        Invoke(nameof(NextPlayer), 0.1f);
     }
 
     public void NextPlayer()
@@ -45,10 +48,10 @@ public class GameState : MonoBehaviour
         currentPlayer = (currentPlayer + 1) % 4;
         highlights[currentPlayer].SetActive(true);
 
-        // if (currentPlayer != playerIndex)
-        // {
-        //     MakeAIMove();
-        // }
+        if (currentPlayer != playerIndex)
+        {
+            StartCoroutine("MakeAIMove");
+        }
     }
 
     public void ClearFromPlayer(int clearFromIndex)
@@ -58,26 +61,97 @@ public class GameState : MonoBehaviour
         highlights[clearFromIndex].SetActive(false);
     }
 
-    private void MakeAIMove()
+    private IEnumerator MakeAIMove()
     {
         do
         {
+            // yield return new WaitForSeconds(0.5f);
             dices[currentPlayer].rolled = false;
             dices[currentPlayer].RollDice();
-            var bestMove = MinMaxAlgorithm();
+            yield return new WaitForSeconds(1.0f);
+            var bestMove = MinMaxAlgorithm(dices[currentPlayer].lastRoll);
 
             if (bestMove != -1)
             {
-                AllPieces[currentPlayer][bestMove].MakeMove();
+                // yield return new WaitForSeconds(0.5f);
+                if (AllPieces[currentPlayer][bestMove].position + dices[currentPlayer].lastRoll == AllCells[currentPlayer].Count)
+                {
+                    homeCells[currentPlayer].AddPiece(AllPieces[currentPlayer][bestMove]);
+                }
+                else
+                {
+                    AllPieces[currentPlayer][bestMove].MakeMove();
+                }
             }
+            AllPieces[currentPlayer].ForEach(piece => piece.highlight.SetActive(false));
         } 
         while (dices[currentPlayer].lastRoll == 6);
 
         NextPlayer();
     }
 
-    private int MinMaxAlgorithm()
+    private int MinMaxAlgorithm(int diceValue)
     {
-        return -1;
+        var bestPieceIndex = -1;
+        var bestScore = int.MinValue;
+
+        for (var i = 0; i < AllPieces[currentPlayer].Count; i++)
+        {
+            if (!AllPieces[currentPlayer][i].CanMakeMove(diceValue))
+            {
+                continue;
+            }
+            
+            var currentPosition = AllPieces[currentPlayer][i].position;
+
+            if (currentPosition == -1)
+            {
+                return i;
+            }
+
+            var score = GetMoveScore(currentPosition + diceValue);
+            
+            if (score <= bestScore)
+            {
+                continue;
+            }
+            
+            bestScore = score;
+            bestPieceIndex = i;
+        }
+        
+        return bestPieceIndex;
+    }
+
+    private int GetMoveScore(int newPosition)
+    {
+        var score = 0;
+
+        if (newPosition > AllCells[currentPlayer].Count - 6)
+        {
+            score += 10;
+        }
+
+        for (var i = 0; i < playerColor.Count; i++)
+        {
+            if (i == currentPlayer)
+            {
+                continue;
+            }
+
+            foreach (var opponentPosition in AllPieces[i])
+            {
+                if (newPosition == opponentPosition.position)
+                {
+                    score += 20;
+                }
+                if (Mathf.Abs(newPosition - opponentPosition.position) <= 6)
+                {
+                    score -= 5;
+                }
+            }
+        }
+        
+        return score;
     }
 }

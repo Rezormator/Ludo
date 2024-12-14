@@ -23,11 +23,7 @@ public class Dice : MonoBehaviour
 
     private void OnMouseDown()
     {
-        // if (gameState.currentPlayer == playerIndex && rolled && playerIndex == gameState.playerIndex)
-        // {
-        //     RollDice();
-        // }
-        if (gameState.currentPlayer == playerIndex && !rolled)
+        if (gameState.currentPlayer == playerIndex && !rolled && playerIndex == gameState.playerIndex)
         {
             rolled = true;
             RollDice();
@@ -59,13 +55,13 @@ public class Dice : MonoBehaviour
         gameState.AllPieces[playerIndex].Where(piece => piece.CanMakeMove(lastRoll))
             .ToList().ForEach(piece => piece.highlight.SetActive(true));
 
-        // if (playerIndex == gameState.playerIndex && gameState.AllPieces[playerIndex].All(piece => !piece.CanMakeMove(lastRoll)))
-        // {
-        //     gameState.NextPlayer();
-        // }
-        if (gameState.AllPieces[playerIndex].All(piece => !piece.CanMakeMove(lastRoll)))
+        if (playerIndex == gameState.playerIndex && gameState.AllPieces[playerIndex].All(piece => !piece.CanMakeMove(lastRoll)))
         {
             gameState.NextPlayer();
         }
+        // if (gameState.AllPieces[playerIndex].All(piece => !piece.CanMakeMove(lastRoll)))
+        // {
+        //     gameState.NextPlayer();
+        // }
     }
 }

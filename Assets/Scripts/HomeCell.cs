@@ -18,6 +18,8 @@ public class HomeCell : MonoBehaviour
     public void AddPiece(Piece piece)
     {
         piece.transform.position = transform.position;
+        piece.highlight.transform.position = transform.position;
+        piece.position = gameState.AllCells[playerIndex].Count;
         piecesCount++;
         text.text = piecesCount.ToString();
 
