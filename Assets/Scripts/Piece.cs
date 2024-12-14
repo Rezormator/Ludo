@@ -30,6 +30,7 @@ public class Piece : MonoBehaviour
         var newPosition = position == -1 ? 0 : position + diceValue;
         if (newPosition == gameState.AllCells[playerIndex].Count)
         {
+            gameState.audioManager.PlaySound(gameState.audioManager.piece);
             gameState.homeCells[playerIndex].AddPiece(this);
         }
         else
@@ -61,6 +62,7 @@ public class Piece : MonoBehaviour
 
     public void MakeMove()
     {
+        gameState.audioManager.PlaySound(gameState.audioManager.piece);
         MoveToCell(position == -1 ? 0 : position + gameState.dices[playerIndex].lastRoll);
     }
 

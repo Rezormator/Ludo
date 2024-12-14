@@ -7,6 +7,7 @@ using System.Collections;
 
 public class GameState : MonoBehaviour
 {
+    public AudioManager audioManager;
     public int playerIndex;
     public int currentPlayer;
     public List<string> playerColor;
@@ -38,6 +39,7 @@ public class GameState : MonoBehaviour
 
         if (homeCells[currentPlayer].piecesCount == 4)
         {
+            audioManager.PlaySound(audioManager.win);
             homeCells.ForEach(number => number.text.text = "");
             winnerText.text = playerColor[currentPlayer] + " player WIN!";
             winnerScreen.SetActive(true);
@@ -76,6 +78,7 @@ public class GameState : MonoBehaviour
                 yield return new WaitForSeconds(0.5f);
                 if (AllPieces[currentPlayer][bestMove].position + dices[currentPlayer].lastRoll == AllCells[currentPlayer].Count)
                 {
+                    audioManager.PlaySound(audioManager.piece);
                     homeCells[currentPlayer].AddPiece(AllPieces[currentPlayer][bestMove]);
                 }
                 else

@@ -12,7 +12,7 @@ public class Dice : MonoBehaviour
     public int lastRoll;
     private Sprite[] _diceSides;
     private SpriteRenderer _rend;
-    
+
     private void Start()
     {
         rolled = false;
@@ -39,6 +39,7 @@ public class Dice : MonoBehaviour
     {
         var randomDiceSide = 0;
 
+        gameState.audioManager.PlaySound(gameState.audioManager.diceRolling);
         for (var i = 0; i <= 10; i++)
         {
             randomDiceSide = Random.Range(0, 6);
