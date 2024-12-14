@@ -59,9 +59,5 @@ public class Dice : MonoBehaviour
         {
             gameState.NextPlayer();
         }
-        // if (gameState.AllPieces[playerIndex].All(piece => !piece.CanMakeMove(lastRoll)))
-        // {
-        //     gameState.NextPlayer();
-        // }
     }
 }

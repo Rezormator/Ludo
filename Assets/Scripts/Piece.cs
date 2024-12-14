@@ -20,10 +20,6 @@ public class Piece : MonoBehaviour
         {
             return;
         }
-        // if (!gameState.dices[playerIndex].rolled)
-        // {
-        //     return;
-        // }
 
         var diceValue = gameState.dices[playerIndex].lastRoll;
         if (!CanMakeMove(diceValue))

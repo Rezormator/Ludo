@@ -65,7 +65,7 @@ public class GameState : MonoBehaviour
     {
         do
         {
-            // yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.5f);
             dices[currentPlayer].rolled = false;
             dices[currentPlayer].RollDice();
             yield return new WaitForSeconds(1.0f);
@@ -73,7 +73,7 @@ public class GameState : MonoBehaviour
 
             if (bestMove != -1)
             {
-                // yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.5f);
                 if (AllPieces[currentPlayer][bestMove].position + dices[currentPlayer].lastRoll == AllCells[currentPlayer].Count)
                 {
                     homeCells[currentPlayer].AddPiece(AllPieces[currentPlayer][bestMove]);
