@@ -41,7 +41,7 @@ public class GameState : MonoBehaviour
         {
             audioManager.PlaySound(audioManager.win);
             homeCells.ForEach(number => number.text.text = "");
-            winnerText.text = playerColor[currentPlayer] + " player WIN!";
+            winnerText.text = playerColor[currentPlayer] + " player WON!";
             winnerScreen.SetActive(true);
             currentPlayer = -1;
             return;
