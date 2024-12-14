@@ -1,49 +1,71 @@
+using System;
 using System.Collections;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Dice : MonoBehaviour
 {
-    public GameProcesses gameProcesses;
+    public GameState gameState;
     public int playerIndex;
-    public int lastRoll { get; private set; }
-    private Sprite[] diceSides;
-    private SpriteRenderer rend;
-
+    public bool rolled;
+    public int lastRoll;
+    private Sprite[] _diceSides;
+    private SpriteRenderer _rend;
+    
     private void Start()
     {
-        rend = GetComponent<SpriteRenderer>();
-        diceSides = Resources.LoadAll<Sprite>("DiceSides/");
+        rolled = false;
+        lastRoll = -1;
+        _rend = GetComponent<SpriteRenderer>();
+        _diceSides = Resources.LoadAll<Sprite>("DiceSides/");
     }
 
     private void OnMouseDown()
     {
-        if (gameProcesses.currentPlayer == playerIndex && !gameProcesses.diceRolled[playerIndex]) {
-            StartCoroutine("RollTheDice");
+        // if (gameState.currentPlayer == playerIndex && rolled && playerIndex == gameState.playerIndex)
+        // {
+        //     RollDice();
+        // }
+        if (gameState.currentPlayer == playerIndex && !rolled)
+        {
+            rolled = true;
+            RollDice();
         }
     }
-
-    private IEnumerator RollTheDice()
+    
+    public void RollDice()
     {
-        int randomDiceSide = 0;
+        StartCoroutine("RollDiceE");
+    }
 
-        for (int i = 0; i <= 10; i++)
+    private IEnumerator RollDiceE()
+    {
+        var randomDiceSide = 0;
+
+        for (var i = 0; i <= 10; i++)
         {
             randomDiceSide = Random.Range(0, 6);
-            rend.sprite = diceSides[randomDiceSide];
+            _rend.sprite = _diceSides[randomDiceSide];
             yield return new WaitForSeconds(0.05f);
         }
 
         lastRoll = randomDiceSide + 1;
+        CheckMoves();
+    }
 
-        if (gameProcesses.pawns[playerIndex].All(pawn => pawn.CanMakeMove(lastRoll) == false)) 
+    private void CheckMoves()
+    {
+        gameState.AllPieces[playerIndex].Where(piece => piece.CanMakeMove(lastRoll))
+            .ToList().ForEach(piece => piece.highlight.SetActive(true));
+
+        // if (playerIndex == gameState.playerIndex && gameState.AllPieces[playerIndex].All(piece => !piece.CanMakeMove(lastRoll)))
+        // {
+        //     gameState.NextPlayer();
+        // }
+        if (gameState.AllPieces[playerIndex].All(piece => !piece.CanMakeMove(lastRoll)))
         {
-            gameProcesses.NextPlayer();
-        }
-        else
-        {
-            gameProcesses.pawns[gameProcesses.currentPlayer].Where(pawn => pawn.CanMakeMove(lastRoll)).ToList().ForEach(pawn => pawn.selected.SetActive(true));
-            gameProcesses.diceRolled[playerIndex] = true;
+            gameState.NextPlayer();
         }
     }
 }
