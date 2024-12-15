@@ -30,8 +30,7 @@ public class Piece : MonoBehaviour
         var newPosition = position == -1 ? 0 : position + diceValue;
         if (newPosition == gameState.AllCells[playerIndex].Count)
         {
-            gameState.audioManager.PlaySound(gameState.audioManager.piece);
-            gameState.homeCells[playerIndex].AddPiece(this);
+            MoveToHomeCell();
         }
         else
         {
@@ -47,8 +46,14 @@ public class Piece : MonoBehaviour
         gameState.NextPlayer();
     }
 
+    public void MoveToHomeCell()
+    {
+        gameState.audioManager.PlaySound(gameState.audioManager.piece);
+        gameState.homeCells[playerIndex].AddPiece(this);
+    }
     private void MoveToCell(int cellIndex)
     {
+        gameState.audioManager.PlaySound(gameState.audioManager.piece);
         gameState.AllCells[playerIndex][cellIndex].Clear();
         gameState.AllCells[playerIndex][cellIndex].SetPiece(this);
         position = cellIndex;
@@ -62,7 +67,6 @@ public class Piece : MonoBehaviour
 
     public void MakeMove()
     {
-        gameState.audioManager.PlaySound(gameState.audioManager.piece);
         MoveToCell(position == -1 ? 0 : position + gameState.dices[playerIndex].lastRoll);
     }
 

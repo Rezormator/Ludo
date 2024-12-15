@@ -24,6 +24,7 @@ public class GameState : MonoBehaviour
     private void Start()
     {
         playerIndex = PlayerPrefs.GetInt("PlayerColor");
+        playerIndex = -1;
         currentPlayer = 3;
         playerColor = new List<string> { "Red", "Green", "Yellow", "Blue" };
         AllPieces = new Dictionary<int, List<Piece>>
@@ -78,8 +79,7 @@ public class GameState : MonoBehaviour
                 yield return new WaitForSeconds(0.5f);
                 if (AllPieces[currentPlayer][bestMove].position + dices[currentPlayer].lastRoll == AllCells[currentPlayer].Count)
                 {
-                    audioManager.PlaySound(audioManager.piece);
-                    homeCells[currentPlayer].AddPiece(AllPieces[currentPlayer][bestMove]);
+                    AllPieces[currentPlayer][bestMove].MoveToHomeCell();
                 }
                 else
                 {
