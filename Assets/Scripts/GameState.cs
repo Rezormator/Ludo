@@ -24,7 +24,6 @@ public class GameState : MonoBehaviour
     private void Start()
     {
         playerIndex = PlayerPrefs.GetInt("PlayerColor");
-        playerIndex = -1;
         currentPlayer = 3;
         playerColor = new List<string> { "Red", "Green", "Yellow", "Blue" };
         AllPieces = new Dictionary<int, List<Piece>>
